@@ -1,0 +1,87 @@
+//总格数
+$col-total: 12 !default;
+
+//超小屏名
+$col-xs: xs !default;;
+
+//列名前缀
+$col-pre: col !default;;
+
+//槽宽
+$gutter: 30px !default;;
+
+//屏幕尺寸
+$sr-sizes: 768px 992px 1200px;
+
+//屏幕类型map
+$sr-type-maps: (sm:768px, md:992px, lg:1200px);
+
+//container宽度map
+$container-maps: (sm:750px, md:970px, lg:1170px);
+
+//重置box-sizing
+* {
+  box-sizing: border-box;
+}
+
+//container类
+.container {
+  padding: {
+    left: $gutter/2;
+    right: $gutter/2;
+  }
+
+  margin: {
+    left: auto;
+    right: auto;
+  }
+
+  //遍历生成.container在不同分辨率下的宽度
+  //$e:屏幕类型，$v屏幕类型对应的宽度
+  @each $e, $v in $sr-type-maps {
+    @media (min-width: $v) {
+      $width: map_get($container-maps, $e);
+      width: $width;
+    }
+  }
+}
+
+.row {
+  margin: {
+    left: $gutter/-2;
+    right: $gutter/-2;
+  }
+;
+}
+
+//生成列的混合宏
+//$end:最大格数，$sr-name:屏幕名
+@mixin make-col($end,$sr-name) {
+  @for $i from 1 through $end {
+    .#{$col-pre}-#{$sr-name}-#{$i} {
+      position: relative;
+      min-height: 1px;
+      padding-right: $gutter/2;
+      padding-left: $gutter/2;
+      float: left;
+      width: percentage($i/$end);
+    }
+  }
+}
+
+//生成超小屏下的列
+@include make-col($col-total, $col-xs);
+
+//生成带媒体查询的列(即超小屏以外的屏幕)
+//$sr-name:屏幕名，$min:屏幕的最小宽度
+@mixin make-col-with-mediaquery($sr-name,$min-width) {
+  @media (min-width: $min-width) {
+    @include make-col($col-total, $sr-name);
+  }
+}
+
+//生成超小屏以外的列
+//$sr-name:屏幕名，$min:屏幕的最小宽度
+@each $sr-name, $min-width in $sr-type-maps {
+  @include make-col-with-mediaquery($sr-name, $min-width);
+}

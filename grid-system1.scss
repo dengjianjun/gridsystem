@@ -1,0 +1,96 @@
+//边距
+$gutter: 30px;
+//总格数
+$column-count: 12;
+
+//container宽度
+$container-sm-width: 750px;
+$container-md-width: 970px;
+$container-lg-width: 1170px;
+
+//屏幕最小宽度
+$sr-sm-min: 768px;
+$sr-md-min: 992px;
+$sr-lg-min: 1200px;
+
+//重置box-sizing
+* {
+  box-sizing: border-box;
+}
+
+//container样式
+.container {
+  padding-right: 15px;
+  padding-left: 15px;
+  margin-right: auto;
+  margin-left: auto;
+  @media (min-width: $sr-sm-min) {
+    width: $container-sm-width;
+  }
+  @media (min-width: $sr-md-min) {
+    width: $container-md-width;
+  }
+  @media (min-width: $sr-lg-min) {
+    width: $container-lg-width;
+  }
+}
+
+.row {
+  margin: {
+    left: $gutter/-2;
+    right: $gutter/-2;
+  }
+;
+}
+
+//列前缀
+$col-name: col;
+//屏幕类型名
+$col-xs: xs;
+$col-sm: sm;
+$col-md: md;
+$col-lg: lg;
+
+%col-common {
+  position: relative;
+  min-height: 1px;
+  padding-right: 15px;
+  padding-left: 15px;
+}
+
+//创建列的混合宏
+@mixin mark-col($col) {
+  @for $i from 1 through $column-count {
+    .#{$col-name}-#{$col}-#{$i} {
+      position: relative;
+      min-height: 1px;
+      padding-right: $gutter/2;
+      padding-left: $gutter/2;
+      width: percentage($i/$column-count);
+      float: left;
+    }
+  }
+}
+
+//生成超小屏下的列
+@for $i from 1 through $column-count {
+  .#{$col-name}-#{$col-xs}-#{$i} {
+    @extend %col-common;
+    width: percentage($i/$column-count);
+  }
+}
+
+//生成小屏下的列
+@media (min-width: $sr-sm-min) {
+  @include mark-col($col-sm);
+}
+
+//生成中屏下的列
+@media (min-width: $sr-md-min) {
+  @include mark-col($col-md);
+}
+
+//生成大屏下的列
+@media (min-width: $sr-lg-min) {
+  @include mark-col($col-lg)
+}
